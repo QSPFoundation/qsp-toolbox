@@ -1,9 +1,8 @@
 #!/bin/bash
-
-# Script to find filenames that are present in both input files
-# Filenames are extracted from lines containing "file: " prefix
 #
-# Usage: ./9_find_common_files.sh <file1> <file2> [pattern]
+# Script to find filenames that are present in both input files
+# Filenames are extracted from lines containing the specified prefix
+#
 
 # Check if correct number of arguments provided
 if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
