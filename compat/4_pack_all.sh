@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 #
-# reassemble_full.sh
 # Reassemble directories into archives, preserving folder hierarchy
 #
 set -euo pipefail

@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Convert QSP/GAM files to QSPSRC format using txt2gam tool
+#
+set -euo pipefail
 
 # Configuration
 SOURCE_DIR="$HOME/qsp/qsp_extract_games/games"

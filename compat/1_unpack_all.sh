@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Extract archives, preserving folder/archive hierarchy
+#
+set -euo pipefail
 
 # ---------------- Configuration ----------------
 SOURCE_DIR="$HOME/qsp/qsp_org/sobi2_downloads"
