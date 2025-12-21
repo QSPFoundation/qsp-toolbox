@@ -23,7 +23,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 while IFS= read -r file; do
     ((total_files++))
     echo "Processing file: $file"
-    gawk -v simple="$SIMPLE" -f "$SCRIPT_DIR/find_same_keywords.awk" "$file"
+    gawk -v simple="$SIMPLE" -f "$SCRIPT_DIR/_find_same_keywords.awk" "$file"
 done < <(find "$SEARCH_DIR" -type f -iname "*.qspsrc")
 
 # Summary

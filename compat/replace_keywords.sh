@@ -11,4 +11,4 @@ exclusions="${3:-}"
 template="${4:-}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-gawk -v kwfile="$keywords" -v exfile="$exclusions" -v template="$template" -f "$SCRIPT_DIR/replace_keywords.awk" "$input"
+gawk -v kwfile="$keywords" -v exfile="$exclusions" -v template="$template" -f "$SCRIPT_DIR/_replace_keywords.awk" "$input"

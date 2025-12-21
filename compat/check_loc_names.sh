@@ -9,4 +9,4 @@ input="$2"
 keywords="$1"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-gawk -f "$SCRIPT_DIR/check_loc_names.awk" "$keywords" "$input"
+gawk -f "$SCRIPT_DIR/_check_loc_names.awk" "$keywords" "$input"
