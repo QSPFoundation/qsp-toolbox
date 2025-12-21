@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/27"
+SEARCH_DIR="$HOME/qsp/qsp_extract_games/games"
 REGEX_PATTERNS=(
     "INSTR\s*\([^,\)]+,[^,\)]+,[^,\)]+\)"
     "ARRPOS\s*\([^,\)]+,[^,\)]+,[^,\)]+\)"
@@ -9,6 +9,7 @@ REGEX_PATTERNS=(
     "RAND\s*\([^,\)]+\)"
     "\)\s*=\s*-\s*1[^\d]"
     "ADDQST"
+    "KILLQST"
     "KILLVAR" # killvar for duplicated vars has to be duplicated
 )
 
@@ -85,7 +86,11 @@ while IFS= read -r file; do
         fi
     done
 
-    [ "$file_has_matches" = true ] && ((files_with_matches++))
+    if [ "$file_has_matches" = true ]; then
+        ((files_with_matches++))
+    else
+        echo "No matches found in file: $file"
+    fi
 
 done < <(find "$SEARCH_DIR" -type f -iname "*.qspsrc")
 

@@ -1,5 +1,5 @@
 # Input variables:
-#   simple   : print only keywords that have total occurrences >= 2 (one per line)
+#   simple   : print only keywords that have total 2+ occurrences (one per line)
 
 BEGIN {
     # delimiter characters
@@ -81,7 +81,7 @@ BEGIN {
 END {
     if (base_index_count == 0) {
         # default behavior: informative message; simple mode: no output
-        if (!simple) print "No keywords found in any variant (plain, $, #, %)."
+        if (!simple) printf "No keywords found in any variant (plain, $, #, %%) in file: %s\n", FILENAME
         exit
     }
 
@@ -155,9 +155,9 @@ END {
 
     if (!simple) {
         if (found_count == 0) {
-            print "No keywords found in 2+ variants (plain, $, #, %)."
+            printf "No keywords found in 2+ variants (plain, $, #, %%) in file: %s\n", FILENAME
         } else {
-            printf "Total keywords found in multiple variants: %d\n", found_count
+            printf "%d keywords found in 2+ variants in file: %s\n", found_count, FILENAME
         }
     }
 }
