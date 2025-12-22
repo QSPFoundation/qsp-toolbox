@@ -1,5 +1,6 @@
 # Input variables:
-#   simple   : print only keywords that have total 2+ occurrences (one per line)
+#   simple      : print only keywords that have total 2+ occurrences (one per line)
+#   ignore_list : comma-separated list of keywords to ignore (case-insensitive)
 
 BEGIN {
     # delimiter characters
@@ -26,6 +27,17 @@ BEGIN {
     label["$"] = "$ references"
     label["#"] = "# references"
     label["%"] = "% references"
+    
+    # Parse ignore_list into an associative array
+    if (ignore_list != "") {
+        split(ignore_list, ignore_array, ",")
+        for (i in ignore_array) {
+            # Trim whitespace and convert to lowercase
+            kw = ignore_array[i]
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", kw)
+            ignore_keywords[tolower(kw)] = 1
+        }
+    }
 }
 
 {
@@ -57,6 +69,9 @@ BEGIN {
             kw = substr(line, kw_start, pos - kw_start)
             if (kw != "") {
                 base = tolower(kw)
+                
+                # Skip if keyword is in ignore list
+                if (base in ignore_keywords) continue
 
                 # per-line + per-prefix dedupe
                 key = prefix SUBSEP base SUBSEP NR

@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Configuration
-SEARCH_DIR="$HOME/qsp/qsp_extract_games/games"
-SIMPLE=0  # Set to 1 for SIMPLE mode (print only keywords, one per line)
+SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/413"
+
+SIMPLE=${SIMPLE:-0}             # Set to 1 for SIMPLE mode (print only keywords, one per line)
+IGNORE_LIST=${IGNORE_LIST:-""}  # Comma-separated list of keywords to ignore
+#IGNORE_LIST="counter,onnewloc,usercom,onobjsel,onactsel,ongload,ongsave,onobjadd,onobjdel"
 
 # Check if a specific file is provided as argument
 if [ "$#" -gt 1 ]; then
@@ -11,8 +14,13 @@ if [ "$#" -gt 1 ]; then
     echo "Arguments:"
     echo "  file.qspsrc - Optional. Process a specific file instead of scanning directory"
     echo ""
+    echo "Configuration variables:"
+    echo "  SIMPLE=0|1      - Simple output mode"
+    echo "  IGNORE_LIST=\"\" - Comma-separated keywords to ignore"
+    echo ""
     echo "Example: $0"
     echo "Example: $0 /path/to/file.qspsrc"
+    echo "Example: IGNORE_LIST=\"tmp,temp,i\" $0 file.qspsrc"
     exit 1
 fi
 
@@ -38,6 +46,11 @@ else
     echo "Directory: $SEARCH_DIR"
 fi
 
+# Print excluded keywords if any
+if [ -n "$IGNORE_LIST" ]; then
+    echo "Excluded keywords: $IGNORE_LIST"
+fi
+
 echo "=========================================="
 echo ""
 
@@ -59,7 +72,7 @@ fi
 for file in "${file_list[@]}"; do
     ((total_files++))
     echo "Processing file: $file"
-    gawk -v simple="$SIMPLE" -f "$SCRIPT_DIR/_find_same_keywords.awk" "$file"
+    gawk -v simple="$SIMPLE" -v ignore_list="$IGNORE_LIST" -f "$SCRIPT_DIR/_find_same_keywords.awk" "$file"
 done
 
 # Summary
