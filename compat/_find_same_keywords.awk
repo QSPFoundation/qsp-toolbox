@@ -157,7 +157,7 @@ END {
         if (found_count == 0) {
             printf "No keywords found in 2+ variants (plain, $, #, %%) in file: %s\n", FILENAME
         } else {
-            printf "%d keywords found in 2+ variants in file: %s\n", found_count, FILENAME
+            printf "Found %d keywords in 2+ variants in file: %s\n", found_count, FILENAME
         }
     }
 }
