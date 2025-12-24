@@ -2,7 +2,6 @@
 #
 # Reassemble directories into archives, preserving folder hierarchy
 #
-set -euo pipefail
 
 ########## Configuration ##########
 EXTRACTED_ROOT="$HOME/qsp/qsp_extract_games/games"

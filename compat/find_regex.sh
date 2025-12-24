@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Configuration
-SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/413"
+SEARCH_DIR="$HOME/qsp/qsp_extract_games/games"
 REGEX_PATTERNS=(
-    "INSTR\s*\([^,\)]+,[^,\)]+,[^,\)]+\)"
-    "ARRPOS\s*\([^,\)]+,[^,\)]+,[^,\)]+\)"
-    "ARRCOMP\s*\([^,\)]+,[^,\)]+,[^,\)]+\)"
+    "INSTR\s*\([^,]+,[^,]+,[^,]+"
+    "ARRPOS\s*\([^,]+,[^,]+,[^,]+"
+    "ARRCOMP\s*\([^,]+,[^,]+,[^,]+"
     "RAND\s*\([^,\)]+\)"
     "\)\s*=\s*-\s*1[^\d]"
     "ADDQST"
