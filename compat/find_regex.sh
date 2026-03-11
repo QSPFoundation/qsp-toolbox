@@ -1,21 +1,26 @@
 #!/bin/bash
 
 # Configuration
-SEARCH_DIR="$HOME/qsp/qsp_extract_games/games"
+SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/179"
 REGEX_PATTERNS=(
-    "INSTR\s*\([^,]+,[^,]+,[^,]+"
-    "ARRPOS\s*\([^,]+,[^,]+,[^,]+"
-    "ARRCOMP\s*\([^,]+,[^,]+,[^,]+"
+    "INSTR\s*\([^,)]+,[^,)]+,[^,)]+"
+    "ARRPOS\s*\([^,)]+,[^,)]+,[^,)]+"
+    "ARRCOMP\s*\([^,)]+,[^,)]+,[^,)]+"
     "RAND\s*\([^,\)]+\)"
-    "\)\s*=\s*-\s*1[^\d]"
+    "(=|!|<>)\s*-\s*?1(?!\d)"
     "ADDQST"
     "KILLQST"
     "KILLVAR" # killvar for duplicated vars has to be duplicated
+    "ARRSIZE" # arrsize might need to be separated for duplicated vars
+    "COPYARR" # copyarr for duplicated vars has to be duplicated
+    "DYNAMIC" # dynamic can build code / var names dynamically
+    "DYNEVAL" # dynamic can build code / var names dynamically
 )
 SHOW_LINE_NUMBERS=${SHOW_LINE_NUMBERS:-true}      # Show line numbers in output
 CASE_INSENSITIVE=${CASE_INSENSITIVE:-true}        # Case-insensitive search
 SHOW_FILENAME_ONLY=${SHOW_FILENAME_ONLY:-false}   # Only show filenames with matches (no content)
 CONTEXT_LINES=${CONTEXT_LINES:-3}                 # Number of context lines to show (0 = none)
+MATCHES_ONLY=${MATCHES_ONLY:-false}               # Only show output for files that have matches
 
 # Check if a specific file is provided as argument
 if [ "$#" -gt 1 ]; then
@@ -56,9 +61,9 @@ echo "----------------------------------------"
 
 # Build grep options
 GREP_OPTS="-P -H"  # Extended regex and always show filename
-[ "$CASE_INSENSITIVE" = true ] && GREP_OPTS="$GREP_OPTS -i"
-[ "$SHOW_LINE_NUMBERS" = true ] && GREP_OPTS="$GREP_OPTS -n"
-[ "$SHOW_FILENAME_ONLY" = true ] && GREP_OPTS="$GREP_OPTS -l"
+[[ "$CASE_INSENSITIVE" = true || "$CASE_INSENSITIVE" = 1 ]] && GREP_OPTS="$GREP_OPTS -i"
+[[ "$SHOW_LINE_NUMBERS" = true || "$SHOW_LINE_NUMBERS" = 1 ]] && GREP_OPTS="$GREP_OPTS -n"
+[[ "$SHOW_FILENAME_ONLY" = true || "$SHOW_FILENAME_ONLY" = 1 ]] && GREP_OPTS="$GREP_OPTS -l"
 [ "$CONTEXT_LINES" -gt 0 ] && GREP_OPTS="$GREP_OPTS -C $CONTEXT_LINES"
 
 # Add color if terminal supports it
@@ -94,53 +99,57 @@ fi
 for file in "${file_list[@]}"; do
     ((total_files++))
 
-    echo ""
-    echo "Processing: $file"
-    echo "----------------------------------------"
-
     file_match_count=0
+    file_output=""
 
     # Check each pattern against this file
     for pattern in "${REGEX_PATTERNS[@]}"; do
-        echo "  Checking pattern: $pattern"
-
         # Search for pattern in file
-        if grep $GREP_OPTS "$pattern" "$file" 2>/dev/null; then
+        result=$(grep $GREP_OPTS "$pattern" "$file" 2>/dev/null)
+        if [ -n "$result" ]; then
+            file_output+="  Checking pattern: $pattern"$'\n'
+            file_output+="$result"$'\n\n'
             ((pattern_files["$pattern"]++))
 
             # Count matches if not in filename-only mode
-            if [ "$SHOW_FILENAME_ONLY" != true ]; then
+            if [[ "$SHOW_FILENAME_ONLY" != true && "$SHOW_FILENAME_ONLY" != 1 ]]; then
                 matches=$(grep -c -P ${CASE_INSENSITIVE:+-i} "$pattern" "$file" 2>/dev/null)
                 ((pattern_matches["$pattern"] += matches))
                 ((total_matches += matches))
                 ((file_match_count += matches))
             fi
-            echo ""
         fi
     done
 
     if [ "$file_match_count" -gt 0 ]; then
         ((files_with_matches++))
+        echo ""
+        echo "Processing: $file"
+        echo "----------------------------------------"
+        echo -n "$file_output"
         echo "Found $file_match_count matches in file: $file"
-    else
+    elif [[ "$MATCHES_ONLY" != true && "$MATCHES_ONLY" != 1 ]]; then
+        echo ""
+        echo "Processing: $file"
+        echo "----------------------------------------"
         echo "No matches found in file: $file"
     fi
 done
 
 echo ""
-echo "========================================"
-echo "SUMMARY BY PATTERN:"
-echo "========================================"
-for pattern in "${REGEX_PATTERNS[@]}"; do
-    echo "Pattern: $pattern"
-    echo "  Matches: ${pattern_matches[$pattern]} in ${pattern_files[$pattern]} file(s)"
-    echo ""
-done
-
 echo "----------------------------------------"
 echo "Search complete!"
 echo "Total files searched: $total_files"
 if [ "$total_matches" -gt 0 ]; then
     echo "Files with matches: $files_with_matches"
     echo "Total matches found: $total_matches"
+    echo ""
+    echo "========================================"
+    echo "SUMMARY BY PATTERN:"
+    echo "========================================"
+    for pattern in "${REGEX_PATTERNS[@]}"; do
+        echo "Pattern: $pattern"
+        echo "  Matches: ${pattern_matches[$pattern]} in ${pattern_files[$pattern]} file(s)"
+        echo ""
+    done
 fi

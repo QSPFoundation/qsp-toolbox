@@ -1,6 +1,8 @@
 # Input variables:
 #   simple      : print only keywords that have total 2+ occurrences (one per line)
 #   ignore_list : comma-separated list of keywords to ignore (case-insensitive)
+#   max_occ     : max occurrences to show per prefix (0 = unlimited)
+#   ctx_lines   : number of context lines to show around each occurrence (default: 2)
 
 BEGIN {
     # delimiter characters
@@ -131,12 +133,12 @@ END {
                     p = pref_order[pi]
                     if (p in present_pref) {
                         if (variant_list != "") variant_list = variant_list ", "
-                        if (p == "") variant_list = variant_list "plain"
-                        else variant_list = variant_list p
+                        if (p == "") variant_list = variant_list "plain: " present_pref[p]
+                        else variant_list = variant_list p ": " present_pref[p]
                     }
                 }
 
-                printf "Found keyword '%s' in %d variants (%s):\n\n", b, present, variant_list
+                printf "Found keyword '%s' in %d variants (at least %s):\n\n", b, present, variant_list
 
                 for (pi = 1; pi <= pref_count; pi++) {
                     p = pref_order[pi]
@@ -148,10 +150,12 @@ END {
                         delete tmp
                         for (i = 1; i <= pn; i++) tmp[i] = list[p, b, i] + 0
                         if (pn > 1) asort(tmp)
-                        for (i = 1; i <= pn; i++) {
+                        limit = (max_occ > 0 && max_occ < pn) ? max_occ : pn
+                        ctx = (ctx_lines == "" ? 2 : ctx_lines + 0)
+                        for (i = 1; i <= limit; i++) {
                             ln = tmp[i]
-                            start = ln - 2; if (start < 1) start = 1
-                            end   = ln + 2; if (end > NR) end = NR
+                            start = ln - ctx; if (start < 1) start = 1
+                            end   = ln + ctx; if (end > NR) end = NR
                             for (j = start; j <= end; j++) {
                                 if (j == ln)
                                     printf "%4d:> %s\n", j, lines[j]
@@ -160,6 +164,7 @@ END {
                             }
                             print ""
                         }
+                        if (limit < pn) printf "  ... (%d more not shown)\n\n", pn - limit
                     }
                 }
 

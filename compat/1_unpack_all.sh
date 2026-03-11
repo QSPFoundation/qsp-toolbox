@@ -4,7 +4,7 @@
 #
 
 # ---------------- Configuration ----------------
-SOURCE_DIR="$HOME/qsp/qsp_org/sobi2_downloads"
+SOURCE_DIR="$HOME/qsp/new_games"
 DEST_DIR="$HOME/qsp/qsp_extract_games/games"
 
 ARCHIVE_EXTENSIONS=("zip" "rar" "7z" "aqsp")   # Archives to extract
