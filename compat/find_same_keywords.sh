@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Configuration
-SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/179"
+SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/220"
 
 SIMPLE=${SIMPLE:-0}             # Set to 1 for SIMPLE mode (print only keywords, one per line)
 IGNORE_LIST=${IGNORE_LIST:-""}  # Comma-separated list of keywords to ignore
-MAX_OCC=${MAX_OCC:-10}           # Max occurrences to show per prefix (0 = unlimited)
+MAX_OCC=${MAX_OCC:-10}          # Max occurrences to show per prefix (0 = unlimited)
 CTX_LINES=${CTX_LINES:-2}       # Number of context lines to show around each occurrence
 #IGNORE_LIST="counter,onnewloc,usercom,onobjsel,onactsel,ongload,ongsave,onobjadd,onobjdel"
 

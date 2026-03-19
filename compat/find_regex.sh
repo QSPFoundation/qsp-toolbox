@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/179"
+SEARCH_DIR="$HOME/qsp/qsp_extract_games/games/220"
 REGEX_PATTERNS=(
     "INSTR\s*\([^,)]+,[^,)]+,[^,)]+"
     "ARRPOS\s*\([^,)]+,[^,)]+,[^,)]+"
@@ -13,13 +13,13 @@ REGEX_PATTERNS=(
     "KILLVAR" # killvar for duplicated vars has to be duplicated
     "ARRSIZE" # arrsize might need to be separated for duplicated vars
     "COPYARR" # copyarr for duplicated vars has to be duplicated
-    "DYNAMIC" # dynamic can build code / var names dynamically
-    "DYNEVAL" # dynamic can build code / var names dynamically
+    "DYNAMIC" # dynamic can generate var names dynamically
+    "DYNEVAL" # dynamic can generate var names dynamically
 )
 SHOW_LINE_NUMBERS=${SHOW_LINE_NUMBERS:-true}      # Show line numbers in output
 CASE_INSENSITIVE=${CASE_INSENSITIVE:-true}        # Case-insensitive search
 SHOW_FILENAME_ONLY=${SHOW_FILENAME_ONLY:-false}   # Only show filenames with matches (no content)
-CONTEXT_LINES=${CONTEXT_LINES:-3}                 # Number of context lines to show (0 = none)
+CTX_LINES=${CTX_LINES:-2}                         # Number of context lines to show (0 = none)
 MATCHES_ONLY=${MATCHES_ONLY:-false}               # Only show output for files that have matches
 
 # Check if a specific file is provided as argument
@@ -64,7 +64,7 @@ GREP_OPTS="-P -H"  # Extended regex and always show filename
 [[ "$CASE_INSENSITIVE" = true || "$CASE_INSENSITIVE" = 1 ]] && GREP_OPTS="$GREP_OPTS -i"
 [[ "$SHOW_LINE_NUMBERS" = true || "$SHOW_LINE_NUMBERS" = 1 ]] && GREP_OPTS="$GREP_OPTS -n"
 [[ "$SHOW_FILENAME_ONLY" = true || "$SHOW_FILENAME_ONLY" = 1 ]] && GREP_OPTS="$GREP_OPTS -l"
-[ "$CONTEXT_LINES" -gt 0 ] && GREP_OPTS="$GREP_OPTS -C $CONTEXT_LINES"
+[ "$CTX_LINES" -gt 0 ] && GREP_OPTS="$GREP_OPTS -C $CTX_LINES"
 
 # Add color if terminal supports it
 if [ -t 1 ]; then
